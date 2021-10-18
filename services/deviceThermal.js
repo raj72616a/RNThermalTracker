@@ -33,6 +33,7 @@ const initThermalCheck = async () => {
     thermalUri = await fetchCpuTempUri('/sys/class/thermal');
     if (!thermalUri)
         thermalUri = await fetchCpuTempUri('/sys/devices/virtual/thermal');
+    // potentially add further possible directories if some phone models use path outside of these two
     return (!thermalUri);
 }
 
@@ -49,8 +50,6 @@ const fetchZoneName = async () => {
     }
     return null;
 }
-
-
 
 export default {
     fetchZoneName : fetchZoneName,

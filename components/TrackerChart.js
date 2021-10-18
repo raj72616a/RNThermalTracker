@@ -11,86 +11,55 @@ function TrackerChart ({thermalLogs}) {
 
   const chart = useRef(null);
 
+  const getOptions = (stateLogs) => {
+    return {
+             xAxis: {
+               type: 'category',
+               show : false,
+             },
+             yAxis: {
+               type: 'value',
+               name: '  Temperature °C'
+             },
+             legend: {
+               data: ['Device', 'Ambient']
+             },
+             series: [
+               {
+                 name : 'Device',
+                 type: 'line',
+                 smooth: 0.6,
+                 showSymbol: false,
+                 lineStyle: {
+                   width: 3
+                 },
+                 data: stateLogs.filter(itm => (itm.dev!=null)).map(({timestamp, dev})=>[timestamp,dev*0.001])
+               },
+               {
+                 name : 'Ambient',
+                 type: 'line',
+                 smooth: 0.6,
+                 showSymbol: false,
+                 lineStyle: {
+                   width: 3,
+                 },
+                 data: stateLogs.filter(itm => (itm.amb!=null)).map(({timestamp, amb})=>[timestamp,amb])
+               }
+             ]
+         }
+    }
+
     useEffect( () => {
         if (chart) {
-            chart.current.setOption({
-                xAxis: {
-                  type: 'category',
-                  show : false,
-                },
-                yAxis: {
-                  type: 'value',
-                  name: '  Temperature °C'
-                },
-                legend: {
-                  data: ['Device', 'Ambient']
-                },
-                series: [
-                  {
-                    name : 'Device',
-                    type: 'line',
-                    smooth: 0.6,
-                    showSymbol: false,
-                    lineStyle: {
-                      width: 3
-                    },
-                    data: thermalLogs.filter(itm => (itm.dev!=null)).map(({timestamp, dev})=>[timestamp,dev*0.001])
-                  },
-                  {
-                    name : 'Ambient',
-                    type: 'line',
-                    smooth: 0.6,
-                    showSymbol: false,
-                    lineStyle: {
-                      width: 3,
-                    },
-                    data: thermalLogs.filter(itm => (itm.amb!=null)).map(({timestamp, amb})=>[timestamp,amb])
-                  }
-                ]
-            })
+            chart.current.setOption(getOptions(thermalLogs)) // required to update ECharts (in webview) on state change
         }
     },[thermalLogs])
 
     return (
         <View style={{ height:'80%', width:'100%' }}>
-
             <ECharts
               ref={chart}
-              option={{
-                        xAxis: {
-                          type: 'category',
-                          show : false,
-                        },
-                        yAxis: {
-                          type: 'value',
-                          name: '  Temperature °C'
-                        },
-                        legend: {
-                          data: ['Device', 'Ambient']
-                        },
-                        series: [
-                          {
-                            name : 'Device',
-                            type: 'line',
-                            smooth: 0.6,
-                            showSymbol: false,
-                            lineStyle: {
-                              width: 3
-                            },
-                            data: thermalLogs.filter(itm => (itm.dev!=null)).map(({timestamp, dev})=>[timestamp,dev])
-                          },
-                          {
-                            name : 'Ambient',
-                            type: 'line',
-                            smooth: 0.6,
-                            showSymbol: false,
-                            lineStyle: {
-                              width: 3,
-                            },
-                            data: thermalLogs.filter(itm => (itm.amb!=null)).map(({timestamp, amb})=>[timestamp,amb])
-                          }
-                        ]
-                      }}
+              option={getOptions(thermalLogs)}
             />
         </View>
     )
