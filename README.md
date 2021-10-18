@@ -14,3 +14,7 @@ Instructions for keeping background service alive can be found in below link:
 https://dontkillmyapp.com/
 
 Up to the latest 100 temperature records will be kept and visualized when you open the app.
+
+##Screenshot:
+
+![Screenshot](https://www.akashangames.com/img/ThermalTracker.jpg)
