@@ -15,38 +15,40 @@ function TrackerChart ({thermalLogs}) {
     useEffect( () => {
         if (chart) {
             chart.current.setOption({
-                                                            xAxis: {
-                                                              type: 'category',
-                                                              show : false,
-                                                            },
-                                                            yAxis: {
-                                                              type: 'value',
-                                                              name: '  Temperature °C'
-                                                            },
-                                                            legend: {
-                                                              data: ['Device', 'Ambient']
-                                                            },
-                                                            series: [
-                                                              {
-                                                                name : 'Device',
-                                                                type: 'line',
-                                                                smooth: 0.6,
-                                                                lineStyle: {
-                                                                  width: 3
-                                                                },
-                                                                data: thermalLogs.filter(itm => (itm.dev!=null)).map(({timestamp, dev})=>[timestamp,dev*0.001])
-                                                              },
-                                                              {
-                                                                name : 'Ambient',
-                                                                type: 'line',
-                                                                smooth: 0.6,
-                                                                lineStyle: {
-                                                                  width: 3,
-                                                                },
-                                                                data: thermalLogs.filter(itm => (itm.amb!=null)).map(({timestamp, amb})=>[timestamp,amb])
-                                                              }
-                                                            ]
-                                                          })
+                xAxis: {
+                  type: 'category',
+                  show : false,
+                },
+                yAxis: {
+                  type: 'value',
+                  name: '  Temperature °C'
+                },
+                legend: {
+                  data: ['Device', 'Ambient']
+                },
+                series: [
+                  {
+                    name : 'Device',
+                    type: 'line',
+                    smooth: 0.6,
+                    showSymbol: false,
+                    lineStyle: {
+                      width: 3
+                    },
+                    data: thermalLogs.filter(itm => (itm.dev!=null)).map(({timestamp, dev})=>[timestamp,dev*0.001])
+                  },
+                  {
+                    name : 'Ambient',
+                    type: 'line',
+                    smooth: 0.6,
+                    showSymbol: false,
+                    lineStyle: {
+                      width: 3,
+                    },
+                    data: thermalLogs.filter(itm => (itm.amb!=null)).map(({timestamp, amb})=>[timestamp,amb])
+                  }
+                ]
+            })
         }
     },[thermalLogs])
 
@@ -72,6 +74,7 @@ function TrackerChart ({thermalLogs}) {
                             name : 'Device',
                             type: 'line',
                             smooth: 0.6,
+                            showSymbol: false,
                             lineStyle: {
                               width: 3
                             },
@@ -81,6 +84,7 @@ function TrackerChart ({thermalLogs}) {
                             name : 'Ambient',
                             type: 'line',
                             smooth: 0.6,
+                            showSymbol: false,
                             lineStyle: {
                               width: 3,
                             },

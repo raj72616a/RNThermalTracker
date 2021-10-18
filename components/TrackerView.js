@@ -25,10 +25,6 @@ function TrackerView ({trackedZone, setTrackedZone, pushThermalLog}) {
             if (zone)
                 setTrackedZone(zone);
         })
-
-//        AmbientThermal.fetchTemperature().then(tmp => {
-//            console.log(tmp)
-//        })
     },[])
 
     useInterval( ()=> {
@@ -51,7 +47,7 @@ function TrackerView ({trackedZone, setTrackedZone, pushThermalLog}) {
 
     useInterval( ()=> {
         fetchAndPushThermalLogs ();
-    }, 1000 * 20)
+    }, 1000 * 60 * 15)
 
     return (
         <View >
