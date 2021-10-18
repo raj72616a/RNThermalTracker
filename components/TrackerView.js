@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { setTrackedZone, pushThermalLog } from '../redux/actions';
-import DeviceThermal from '../services/deviceThermal';
-import useInterval from 'react-useinterval';
 
+import DeviceThermal from '../services/deviceThermal';
 import AmbientThermal from '../services/ambientThermal';
+
+import useInterval from 'react-useinterval';
+import BackgroundFetch from "react-native-background-fetch";
 
 import {
   Text,
@@ -45,9 +47,18 @@ function TrackerView ({trackedZone, setTrackedZone, pushThermalLog}) {
         })
     }
 
-    useInterval( ()=> {
-        fetchAndPushThermalLogs ();
-    }, 1000 * 60 * 15)
+    useEffect(()=>{
+        BackgroundFetch.configure({
+            requiredNetworkType : BackgroundFetch.NETWORK_TYPE_ANY,
+            minimumFetchInterval: 30,
+        }, async (taskId)=>{ // onEvent
+            await fetchAndPushThermalLogs();
+            BackgroundFetch.finish(taskId);
+        }, async (taskId)=>{ // onTimeout
+            BackgroundFetch.finish(taskId);
+        })
+        .then ( status => { console.log('Background Task Status : ' + status) } ) // always return 2 in Android
+    },[]);
 
     return (
         <View >
