@@ -26,31 +26,14 @@ import {
   ReloadInstructions,
 } from 'react-native/Libraries/NewAppScreen';
 
-const Section = ({children, title}): Node => {
-  const isDarkMode = useColorScheme() === 'dark';
-  return (
-    <View style={styles.sectionContainer}>
-      <Text
-        style={[
-          styles.sectionTitle,
-          {
-            color: isDarkMode ? Colors.white : Colors.black,
-          },
-        ]}>
-        {title}
-      </Text>
-      <Text
-        style={[
-          styles.sectionDescription,
-          {
-            color: isDarkMode ? Colors.light : Colors.dark,
-          },
-        ]}>
-        {children}
-      </Text>
-    </View>
-  );
-};
+import { Provider } from 'react-redux'
+import { createStore } from 'redux';
+import reducer from './redux/reducers'
+
+import TrackerView from './components/TrackerView';
+import TrackerChart from './components/TrackerChart';
+
+const store = createStore(reducer);
 
 const App: () => Node = () => {
   const isDarkMode = useColorScheme() === 'dark';
@@ -60,33 +43,23 @@ const App: () => Node = () => {
   };
 
   return (
+  <Provider store = {store}>
     <SafeAreaView style={backgroundStyle}>
-      <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />
-      <ScrollView
-        contentInsetAdjustmentBehavior="automatic"
+      <StatusBar barStyle={ 'light-content' } />
+      <View
         style={backgroundStyle}>
-        <Header />
+        <Text style={{fontSize:24, padding: 10, fontWeight:'bold'}}>RN Thermal Tracker</Text>
         <View
           style={{
-            backgroundColor: isDarkMode ? Colors.black : Colors.white,
+            backgroundColor: Colors.white,
+            flexDirection: "column",
           }}>
-          <Section title="Step One">
-            Edit <Text style={styles.highlight}>App.js</Text> to change this
-            screen and then come back to see your edits.
-          </Section>
-          <Section title="See Your Changes">
-            <ReloadInstructions />
-          </Section>
-          <Section title="Debug">
-            <DebugInstructions />
-          </Section>
-          <Section title="Learn More">
-            Read the docs to discover what to do next:
-          </Section>
-          <LearnMoreLinks />
+          <TrackerView/>
+          <TrackerChart/>
         </View>
-      </ScrollView>
+      </View>
     </SafeAreaView>
+  </Provider>
   );
 };
 

@@ -1,0 +1,2 @@
+export const SET_TRACKED_ZONE = 'SET_TRACKED_ZONE';
+export const PUSH_THERMAL_LOG = 'PUSH_THERMAL_LOG';
