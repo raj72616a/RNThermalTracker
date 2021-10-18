@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
-import { setTrackedZone } from '../redux/actions';
+import { setTrackedZone, pushThermalLog } from '../redux/actions';
 import DeviceThermal from '../services/deviceThermal';
 import useInterval from 'react-useinterval';
 
@@ -16,7 +16,7 @@ const TempRender = (tmp) => {
     return (tmp/1000).toFixed(1) + '°C';
 }
 
-function TrackerView ({trackedZone, setTrackedZone}) {
+function TrackerView ({trackedZone, setTrackedZone, pushThermalLog}) {
 
     const [temp, setTemp] = useState(0);
 
@@ -26,9 +26,9 @@ function TrackerView ({trackedZone, setTrackedZone}) {
                 setTrackedZone(zone);
         })
 
-        AmbientThermal.fetchTemperature().then(tmp => {
-            console.log(tmp)
-        })
+//        AmbientThermal.fetchTemperature().then(tmp => {
+//            console.log(tmp)
+//        })
     },[])
 
     useInterval( ()=> {
@@ -37,6 +37,21 @@ function TrackerView ({trackedZone, setTrackedZone}) {
                 setTemp(tmp);
         })
     }, 1000)
+
+    const fetchAndPushThermalLogs = async () => {
+        let devTmp = await DeviceThermal.fetchTemperature();
+        let ambTmp = await AmbientThermal.fetchTemperature();
+
+        pushThermalLog({
+            timestamp : new Date(),
+            dev : devTmp,
+            amb : ambTmp,
+        })
+    }
+
+    useInterval( ()=> {
+        fetchAndPushThermalLogs ();
+    }, 1000 * 20)
 
     return (
         <View >
@@ -52,4 +67,4 @@ const mapStateToProps = function(state) {
   }
 }
 
-export default connect(mapStateToProps, {setTrackedZone})(TrackerView);
+export default connect(mapStateToProps, {setTrackedZone, pushThermalLog})(TrackerView);
