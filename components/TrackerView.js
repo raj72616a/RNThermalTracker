@@ -4,6 +4,8 @@ import { setTrackedZone } from '../redux/actions';
 import DeviceThermal from '../services/deviceThermal';
 import useInterval from 'react-useinterval';
 
+import AmbientThermal from '../services/ambientThermal';
+
 import {
   Text,
   View,
@@ -19,17 +21,21 @@ function TrackerView ({trackedZone, setTrackedZone}) {
     const [temp, setTemp] = useState(0);
 
     useEffect( () => {
-        DeviceThermal.fetchZoneName().then((zone => {
+        DeviceThermal.fetchZoneName().then(zone => {
             if (zone)
                 setTrackedZone(zone);
-        }))
+        })
+
+        AmbientThermal.fetchTemperature().then(tmp => {
+            console.log(tmp)
+        })
     },[])
 
     useInterval( ()=> {
-        DeviceThermal.fetchTemperature().then((tmp => {
+        DeviceThermal.fetchTemperature().then(tmp => {
             if (tmp)
                 setTemp(tmp);
-        }))
+        })
     }, 1000)
 
     return (
