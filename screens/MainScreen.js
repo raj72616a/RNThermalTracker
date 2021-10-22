@@ -3,7 +3,6 @@ import { connect } from 'react-redux';
 import { setTrackedZone, pushThermalLog } from '../redux/actions';
 
 import DeviceThermal from '../services/deviceThermal';
-
 import BackgroundLogging from "../services/backgroundLogging";
 
 import useInterval from 'react-useinterval';

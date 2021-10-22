@@ -29,13 +29,13 @@ class DeviceThermalService {
     }
 
     async fetchCpuTempUri (base_dir) {
-      let result = await ShellCmd(`ls ${base_dir}`);
-      let devices = result.split('\n');
+      const result = await ShellCmd(`ls ${base_dir}`);
+      const devices = result.split('\n');
 
       for (let i in devices) {
-          let dev = devices[i];
+          const dev = devices[i];
           if (dev.length > 9 && dev.substr(0,9) == 'thermal_z') {
-              let type = await ShellCmd(`cat ${base_dir}/${dev}/type`);
+              const type = await ShellCmd(`cat ${base_dir}/${dev}/type`);
               if (type.length >= 3 && type.substr(0,3) == 'cpu') {
                   return [type, `${base_dir}/${dev}/temp`];
               }

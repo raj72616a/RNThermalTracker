@@ -12,8 +12,8 @@ function BackgroundLoggingInit () {
             startOnBoot : true,
             stopOnTerminate : false,
         }, async (taskId)=>{ // onEvent
-            let devTmp = await DeviceThermal.fetchTemperature();
-            let ambTmp = await AmbientThermal.fetchTemperature();
+            const devTmp = await DeviceThermal.fetchTemperature();
+            const ambTmp = await AmbientThermal.fetchTemperature();
 
             try {
                 let backgroundLogs = await AsyncStorage.getItem('backgroundLogs');
