@@ -27,8 +27,7 @@ import { persistStore, persistReducer } from 'redux-persist'
 import { PersistGate } from 'redux-persist/integration/react'
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-import TrackerView from './components/TrackerView';
-import TrackerChart from './components/TrackerChart';
+import MainScreen from './screens/MainScreen';
 
 const persistConfig = {
   key: 'root',
@@ -36,12 +35,14 @@ const persistConfig = {
 }
 const persistedReducer = persistReducer(persistConfig, reducer)
 const store = createStore(persistedReducer);
-let persistor = persistStore(store);
+const persistor = persistStore(store);
 
 const App: () => Node = () => {
 
   const backgroundStyle = {
     backgroundColor: Colors.lighter,
+    flexDirection: "column",
+    height:'100%',
   };
 
   return (
@@ -56,9 +57,9 @@ const App: () => Node = () => {
           style={{
             backgroundColor: Colors.white,
             flexDirection: "column",
+            flex: 1,
           }}>
-          <TrackerView/>
-          <TrackerChart/>
+          <MainScreen/>
         </View>
       </View>
     </SafeAreaView>

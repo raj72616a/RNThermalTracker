@@ -1,17 +1,34 @@
 import AndroidShell from 'react-native-android-shell';
 
-let thermalZone = '';
-let thermalUri = null;
+function ShellCmd (cmd) { // promisify AndroidShell
+  return new Promise((resolve) => {
+      AndroidShell.executeCommand(cmd, (res)=>{
+          resolve(res);
+      })
+  })
+}
 
-  const ShellCmd = (cmd) => {
-    return new Promise((resolve) => {
-        AndroidShell.executeCommand(cmd, (res)=>{
-            resolve(res);
-        })
-    })
-  }
+class DeviceThermalService {
+    constructor() {
+        this.thermalZone = undefined;
+        this.thermalUri = undefined;
+        this.initialization = this.init();
+    }
 
-const fetchCpuTempUri = async(base_dir) => {
+    async init() {
+        // check multiple locations for CPU thermal sensor path
+        let result = await this.fetchCpuTempUri('/sys/class/thermal');
+        if (result == null) {
+            result = await this.fetchCpuTempUri('/sys/devices/virtual/thermal');
+        }
+
+        if (result) {
+            this.thermalZone = result[0];
+            this.thermalUri = result[1];
+        }
+    }
+
+    async fetchCpuTempUri (base_dir) {
       let result = await ShellCmd(`ls ${base_dir}`);
       let devices = result.split('\n');
 
@@ -19,39 +36,27 @@ const fetchCpuTempUri = async(base_dir) => {
           let dev = devices[i];
           if (dev.length > 9 && dev.substr(0,9) == 'thermal_z') {
               let type = await ShellCmd(`cat ${base_dir}/${dev}/type`);
-              if (type.length > 3 && type.substr(0,3) == 'cpu') {
-                  thermalZone = type;
-                  return `${base_dir}/${dev}/temp`;
+              if (type.length >= 3 && type.substr(0,3) == 'cpu') {
+                  return [type, `${base_dir}/${dev}/temp`];
               }
           }
       }
 
       return null;
-};
-
-const initThermalCheck = async () => {
-    thermalUri = await fetchCpuTempUri('/sys/class/thermal');
-    if (!thermalUri)
-        thermalUri = await fetchCpuTempUri('/sys/devices/virtual/thermal');
-    // potentially add further possible directories if some phone models use path outside of these two
-    return (!thermalUri);
-}
-
-const fetchTemperature = async () => {
-    if (thermalUri || await initThermalCheck()) {
-        return await ShellCmd(`cat ${thermalUri}`);
     }
-    return null;
-}
 
-const fetchZoneName = async () => {
-    if (thermalUri || await initThermalCheck()) {
-        return thermalZone;
+    async fetchZoneName () {
+        await this.initialization;
+        return this.thermalZone;
     }
-    return null;
+
+    async fetchTemperature () {
+        await this.initialization;
+        if (this.thermalUri)
+            return await ShellCmd(`cat ${this.thermalUri}`);
+
+        return null;
+    }
 }
 
-export default {
-    fetchZoneName : fetchZoneName,
-    fetchTemperature : fetchTemperature,
-}
+export default new DeviceThermalService();

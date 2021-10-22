@@ -1,6 +1,6 @@
 import { WEATHER_API_KEY } from '../weatherApiKey';
 
-const fetchTemperature = async () => {
+async function fetchTemperature () {
     try {
         let res = await fetch(`https://api.weatherapi.com/v1/current.json?key=${WEATHER_API_KEY}&q=auto:ip&aqi=no`);
         let json = await res.json();

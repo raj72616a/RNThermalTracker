@@ -1,11 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import { connect } from 'react-redux';
 import { ECharts } from "react-native-echarts-wrapper";
-
-import {
-  Text,
-  View,
-} from 'react-native';
+import { View } from 'react-native';
 
 function TrackerChart ({thermalLogs}) {
 
@@ -33,7 +29,7 @@ function TrackerChart ({thermalLogs}) {
                  lineStyle: {
                    width: 3
                  },
-                 data: stateLogs.filter(itm => (itm.dev!=null)).map(({timestamp, dev})=>[timestamp,dev*0.001])
+                 data: stateLogs.filter(itm => (itm.dev!=null)).map(({timestamp, dev})=>[timestamp,dev*0.001]).sort((a,b)=> a[0].localeCompare(b[0]) )
                },
                {
                  name : 'Ambient',
@@ -43,7 +39,7 @@ function TrackerChart ({thermalLogs}) {
                  lineStyle: {
                    width: 3,
                  },
-                 data: stateLogs.filter(itm => (itm.amb!=null)).map(({timestamp, amb})=>[timestamp,amb])
+                 data: stateLogs.filter(itm => (itm.amb!=null)).map(({timestamp, amb})=>[timestamp,amb]).sort((a,b)=> a[0].localeCompare(b[0]) )
                }
              ]
          }
@@ -56,7 +52,7 @@ function TrackerChart ({thermalLogs}) {
     },[thermalLogs])
 
     return (
-        <View style={{ height:'80%', width:'100%' }}>
+        <View style={{ flex: 1, padding: 10, width:'100%' }}>
             <ECharts
               ref={chart}
               option={getOptions(thermalLogs)}
