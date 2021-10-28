@@ -27,6 +27,7 @@ import { persistStore, persistReducer } from 'redux-persist'
 import { PersistGate } from 'redux-persist/integration/react'
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
+import BackgroundServiceWrapper from './containers/backgroundServiceWrapper';
 import MainScreen from './screens/MainScreen';
 
 const persistConfig = {
@@ -59,7 +60,9 @@ const App: () => Node = () => {
             flexDirection: "column",
             flex: 1,
           }}>
-          <MainScreen/>
+          <BackgroundServiceWrapper>
+            <MainScreen/>
+          </BackgroundServiceWrapper>
         </View>
       </View>
     </SafeAreaView>

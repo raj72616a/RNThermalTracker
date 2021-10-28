@@ -2,9 +2,16 @@ import AndroidShell from 'react-native-android-shell';
 
 function ShellCmd (cmd) { // promisify AndroidShell
   return new Promise((resolve) => {
-      AndroidShell.executeCommand(cmd, (res)=>{
-          resolve(res);
-      })
+      try {
+          AndroidShell.executeCommand(cmd, (res)=>{
+              resolve(res);
+          })
+      }
+      catch (e) {
+          console.log('services/ambientThermal - AndroidShell error');
+          console.log(e);
+          resolve('');
+      }
   })
 }
 

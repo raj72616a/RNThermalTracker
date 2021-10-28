@@ -1,8 +1,8 @@
-import {SET_TRACKED_ZONE, PUSH_THERMAL_LOG} from '../actionTypes';
+import {SET_TRACKED_ZONE, PUSH_THERMAL_RECORDS} from '../actionTypes';
 
 const initialState = {
     trackedZone : '',
-    thermalLogs : [],
+    thermalRecords : [],
 }
 
 function reducer(state = initialState, action) {
@@ -12,25 +12,25 @@ function reducer(state = initialState, action) {
                 ...state,
                 trackedZone : action.payload,
             };
-        case PUSH_THERMAL_LOG :
-            if (!Array.isArray(action.payload)) { // single log
-                let logs = state.thermalLogs.slice( state.thermalLogs.length >= 100 ? 1 : 0 );
+        case PUSH_THERMAL_RECORDS :
+            if (!Array.isArray(action.payload)) { // single record
+                let logs = state.thermalRecords.slice( state.thermalRecords.length >= 100 ? 1 : 0 );
                 logs.push (action.payload);
                 return {
                     ...state,
-                    thermalLogs : logs,
+                    thermalRecords : logs,
                 }
             }
-            else { // array of logs
+            else { // array of records
                 if (action.payload.length > 100) {
                     action.payload.splice(100);
                 }
-                let logs = state.thermalLogs.slice( (state.thermalLogs.length + action.payload.length) >= 100 ?
-                                                        (state.thermalLogs.length + action.payload.length - 100) : 0 );
+                let logs = state.thermalRecords.slice( (state.thermalRecords.length + action.payload.length) >= 100 ?
+                                                        (state.thermalRecords.length + action.payload.length - 100) : 0 );
                 logs = [...logs, ...action.payload];
                 return {
                     ...state,
-                    thermalLogs : logs,
+                    thermalRecords : logs,
                 }
             }
         default :
